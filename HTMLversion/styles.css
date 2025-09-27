@@ -603,17 +603,30 @@ input:checked + .slider:before {
 }
 
 .attribution a {
-    color: var(--operator-btn-bg);
+    color: #0066cc;
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 .attribution a:hover {
-    color: var(--operator-btn-hover);
+    color: #004499;
     text-decoration: underline;
 }
 
 .attribution a:active {
+    color: #002266;
+}
+
+/* Dark theme attribution links keep orange color */
+.dark-theme .attribution a {
+    color: var(--operator-btn-bg);
+}
+
+.dark-theme .attribution a:hover {
+    color: var(--operator-btn-hover);
+}
+
+.dark-theme .attribution a:active {
     color: var(--operator-btn-active);
 }
 
