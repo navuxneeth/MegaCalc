@@ -91,4 +91,5 @@ cd PixelCalc
 MIT License
 
 Made by Navaneeth Sankar K P [Linkedin](https://www.linkedin.com/in/navaneeth-sankar-k-p)
+
 Code assist by [Claude](https://claude.ai/login?returnTo=%2F%3F) 3.7 Thinking and 4 Sonnet
