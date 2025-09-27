@@ -582,6 +582,41 @@ input:checked + .slider:before {
     z-index: 1;
 }
 
+/* Attribution Section */
+.attribution {
+    margin-top: 15px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.dark-theme .attribution {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attribution-line {
+    font-family: var(--font-family);
+    font-size: 0.6rem;
+    margin: 3px 0;
+    color: var(--btn-text);
+    line-height: 1.4;
+}
+
+.attribution a {
+    color: var(--operator-btn-bg);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.attribution a:hover {
+    color: var(--operator-btn-hover);
+    text-decoration: underline;
+}
+
+.attribution a:active {
+    color: var(--operator-btn-active);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .calculator-header {
