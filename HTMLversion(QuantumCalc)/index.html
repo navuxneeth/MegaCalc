@@ -3,189 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumCalc - Advanced Calculator</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Load external libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.3.1/decimal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>RetroCalc</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body class="light-theme">
+<body>
     <div class="calculator-container">
-        <div class="header">
-            <div class="title">QuantumCalc</div>
-            <div class="mode-toggles">
-                <button id="simpleMode" class="mode-btn active">Simple</button>
-                <button id="advancedMode" class="mode-btn">Advanced</button>
-                <button id="graphMode" class="mode-btn">Graph</button>
-            </div>
-            <div class="theme-toggle">
-                <i class="fas fa-sun"></i>
-                <label class="switch">
-                    <input type="checkbox" id="themeToggle">
-                    <span class="slider round"></span>
-                </label>
-                <i class="fas fa-moon"></i>
-            </div>
-        </div>
-
-        <div class="display-container">
-            <div class="history" id="history"></div>
-            <div class="display" id="display">0</div>
-        </div>
-        
-        <div class="precision-control">
-            <span>Precision: </span>
-            <input type="range" min="1" max="50" value="10" class="precision-slider" id="precisionSlider">
-            <span id="precisionValue">10</span> <span>decimal places</span>
-        </div>
-
-        <!-- Simple Calculator Mode -->
-        <div class="calculator-keypad simple-mode" id="simpleKeypad">
-            <div class="keypad-row">
-                <button class="key function">C</button>
-                <button class="key function">±</button>
-                <button class="key function">%</button>
-                <button class="key operator">÷</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">7</button>
-                <button class="key number">8</button>
-                <button class="key number">9</button>
-                <button class="key operator">×</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">4</button>
-                <button class="key number">5</button>
-                <button class="key number">6</button>
-                <button class="key operator">−</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">1</button>
-                <button class="key number">2</button>
-                <button class="key number">3</button>
-                <button class="key operator">+</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number zero">0</button>
-                <button class="key number">.</button>
-                <button class="key equal">=</button>
-            </div>
-        </div>
-
-        <!-- Advanced Calculator Mode -->
-        <div class="calculator-keypad advanced-mode hidden" id="advancedKeypad">
-            <div class="keypad-row">
-                <button class="key function">C</button>
-                <button class="key function">MC</button>
-                <button class="key function">MR</button>
-                <button class="key function">M+</button>
-                <button class="key function">M−</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key function">2<sup>nd</sup></button>
-                <button class="key function">π</button>
-                <button class="key function">e</button>
-                <button class="key function">Rand</button>
-                <button class="key function">Ans</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key function">x²</button>
-                <button class="key function">x³</button>
-                <button class="key function">x<sup>y</sup></button>
-                <button class="key function">10<sup>x</sup></button>
-                <button class="key function">log</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key function">√x</button>
-                <button class="key function">∛x</button>
-                <button class="key function">∜x</button>
-                <button class="key function">ln</button>
-                <button class="key function">log<sub>y</sub>x</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key function">sin</button>
-                <button class="key function">cos</button>
-                <button class="key function">tan</button>
-                <button class="key function">(</button>
-                <button class="key function">)</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">7</button>
-                <button class="key number">8</button>
-                <button class="key number">9</button>
-                <button class="key operator">÷</button>
-                <button class="key function">!</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">4</button>
-                <button class="key number">5</button>
-                <button class="key number">6</button>
-                <button class="key operator">×</button>
-                <button class="key function">mod</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">1</button>
-                <button class="key number">2</button>
-                <button class="key number">3</button>
-                <button class="key operator">−</button>
-                <button class="key function">|x|</button>
-            </div>
-            <div class="keypad-row">
-                <button class="key number">0</button>
-                <button class="key number">.</button>
-                <button class="key function">×10<sup>n</sup></button>
-                <button class="key operator">+</button>
-                <button class="key equal">=</button>
-            </div>
-        </div>
-
-        <!-- Graphing Mode -->
-        <div class="graphing-mode hidden" id="graphingMode">
-            <div class="graph-controls">
-                <div class="function-input">
-                    <label for="functionInput">f(x) = </label>
-                    <input type="text" id="functionInput" placeholder="e.g., x^2 + 2*x + 1">
-                    <button id="plotBtn" class="plot-btn">Plot</button>
+        <div class="calculator">
+            <div class="calculator-header">
+                <h1 class="calculator-title">RetroCalc</h1>
+                <div class="mode-selector">
+                    <button class="mode-btn" id="simple-mode">Simple</button>
+                    <button class="mode-btn" id="advanced-mode">Advanced</button>
+                    <button class="mode-btn" id="graph-mode">Graph</button>
                 </div>
-                <div class="graph-options">
-                    <div class="range-inputs">
-                        <div>
-                            <label for="xMinInput">x min:</label>
-                            <input type="number" id="xMinInput" value="-10" step="1">
-                        </div>
-                        <div>
-                            <label for="xMaxInput">x max:</label>
-                            <input type="number" id="xMaxInput" value="10" step="1">
-                        </div>
-                        <div>
-                            <label for="yMinInput">y min:</label>
-                            <input type="number" id="yMinInput" value="-10" step="1">
-                        </div>
-                        <div>
-                            <label for="yMaxInput">y max:</label>
-                            <input type="number" id="yMaxInput" value="10" step="1">
-                        </div>
-                    </div>
-                    <div class="color-picker">
-                        <label for="graphColor">Line Color:</label>
-                        <input type="color" id="graphColor" value="#ff0000">
-                    </div>
-                    <div class="zoom-controls">
-                        <button id="zoomIn"><i class="fas fa-search-plus"></i></button>
-                        <button id="zoomOut"><i class="fas fa-search-minus"></i></button>
-                        <button id="resetZoom"><i class="fas fa-sync-alt"></i></button>
-                    </div>
+                <div class="theme-toggle">
+                    <img src="img/sun.svg" alt="Light Mode" class="theme-icon">
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <img src="img/moon.svg" alt="Dark Mode" class="theme-icon">
                 </div>
             </div>
-            <div class="graph-container">
-                <canvas id="graphCanvas"></canvas>
+
+            <div class="display-container">
+                <div class="history-display" id="history-display"></div>
+                <div class="main-display" id="main-display">0</div>
+            </div>
+
+            <div class="precision-container">
+                <label for="precision-slider" class="precision-label">Precision:</label>
+                <input type="range" id="precision-slider" min="1" max="50" value="10" class="precision-slider">
+                <span id="precision-value">10</span>
+                <span class="precision-text">decimal places</span>
+            </div>
+
+            <!-- Simple Calculator Interface -->
+            <div id="simple-interface" class="calculator-interface active">
+                <div class="keypad">
+                    <button class="btn function-btn">AC</button>
+                    <button class="btn function-btn">±</button>
+                    <button class="btn function-btn">%</button>
+                    <button class="btn operator-btn">÷</button>
+                    
+                    <button class="btn number-btn">7</button>
+                    <button class="btn number-btn">8</button>
+                    <button class="btn number-btn">9</button>
+                    <button class="btn operator-btn">×</button>
+                    
+                    <button class="btn number-btn">4</button>
+                    <button class="btn number-btn">5</button>
+                    <button class="btn number-btn">6</button>
+                    <button class="btn operator-btn">-</button>
+                    
+                    <button class="btn number-btn">1</button>
+                    <button class="btn number-btn">2</button>
+                    <button class="btn number-btn">3</button>
+                    <button class="btn operator-btn">+</button>
+                    
+                    <button class="btn number-btn zero">0</button>
+                    <button class="btn number-btn">.</button>
+                    <button class="btn equal-btn">=</button>
+                </div>
+            </div>
+
+            <!-- Advanced Calculator Interface -->
+            <div id="advanced-interface" class="calculator-interface">
+                <div class="keypad advanced-keypad">
+                    <button class="btn function-btn">AC</button>
+                    <button class="btn function-btn">MC</button>
+                    <button class="btn function-btn">MR</button>
+                    <button class="btn function-btn">M+</button>
+                    <button class="btn function-btn">M-</button>
+                    
+                    <button class="btn function-btn">sin</button>
+                    <button class="btn function-btn">cos</button>
+                    <button class="btn function-btn">tan</button>
+                    <button class="btn function-btn">log</button>
+                    <button class="btn function-btn">ln</button>
+                    
+                    <button class="btn function-btn">x²</button>
+                    <button class="btn function-btn">x³</button>
+                    <button class="btn function-btn">xʸ</button>
+                    <button class="btn function-btn">√</button>
+                    <button class="btn function-btn">∛</button>
+                    
+                    <button class="btn constant-btn">π</button>
+                    <button class="btn constant-btn">e</button>
+                    <button class="btn function-btn">Rand</button>
+                    <button class="btn function-btn">|x|</button>
+                    <button class="btn function-btn">1/x</button>
+                    
+                    <button class="btn number-btn">7</button>
+                    <button class="btn number-btn">8</button>
+                    <button class="btn number-btn">9</button>
+                    <button class="btn operator-btn">÷</button>
+                    <button class="btn function-btn">(</button>
+                    
+                    <button class="btn number-btn">4</button>
+                    <button class="btn number-btn">5</button>
+                    <button class="btn number-btn">6</button>
+                    <button class="btn operator-btn">×</button>
+                    <button class="btn function-btn">)</button>
+                    
+                    <button class="btn number-btn">1</button>
+                    <button class="btn number-btn">2</button>
+                    <button class="btn number-btn">3</button>
+                    <button class="btn operator-btn">-</button>
+                    <button class="btn function-btn">n!</button>
+                    
+                    <button class="btn number-btn">0</button>
+                    <button class="btn number-btn">.</button>
+                    <button class="btn equal-btn">=</button>
+                    <button class="btn operator-btn">+</button>
+                    <button class="btn function-btn">Ans</button>
+                </div>
+            </div>
+
+            <!-- Graph Calculator Interface -->
+            <div id="graph-interface" class="calculator-interface">
+                <div class="equation-container">
+                    <div class="equation-list" id="equation-list">
+                        <div class="equation-entry">
+                            <label class="equation-label">f₁(x) =</label>
+                            <input type="text" class="equation-input" placeholder="Enter function (e.g. x^2)">
+                            <input type="color" class="color-picker" value="#00FF00">
+                            <button class="remove-equation-btn">×</button>
+                        </div>
+                    </div>
+                    <button class="add-equation-btn" id="add-equation-btn">+ Add Equation</button>
+                </div>
+                
+                <div class="graph-controls">
+                    <div class="range-control">
+                        <label>x min:</label>
+                        <input type="number" id="x-min" value="-10" step="0.5">
+                        
+                        <label>x max:</label>
+                        <input type="number" id="x-max" value="10" step="0.5">
+                    </div>
+                    
+                    <div class="range-control">
+                        <label>y min:</label>
+                        <input type="number" id="y-min" value="-10" step="0.5">
+                        
+                        <label>y max:</label>
+                        <input type="number" id="y-max" value="10" step="0.5">
+                    </div>
+                    
+                    <div class="graph-buttons">
+                        <button class="graph-btn" id="zoom-in-btn">
+                            <span class="zoom-icon">+</span>
+                        </button>
+                        <button class="graph-btn" id="zoom-out-btn">
+                            <span class="zoom-icon">-</span>
+                        </button>
+                        <button class="graph-btn" id="reset-view-btn">
+                            <span class="reset-icon">↺</span>
+                        </button>
+                        <button class="graph-btn" id="plot-btn">Plot</button>
+                    </div>
+                </div>
+                
+                <div class="graph-container">
+                    <canvas id="graph-canvas"></canvas>
+                </div>
             </div>
         </div>
     </div>
-
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.1.1/bignumber.min.js"></script>
     <script src="js/calculator.js"></script>
-    <script src="js/graphing.js"></script>
-    <script src="js/ui.js"></script>
+    <script src="js/grapher.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
