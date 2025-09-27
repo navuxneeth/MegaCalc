@@ -1,9 +1,9 @@
 # PixelCalc
 
 A retro-styled, advanced calculator web application with graphing capabilities.
-
-
-
+<img width="653" height="586" alt="image" src="https://github.com/user-attachments/assets/c41ecc68-a760-4e6d-8ebc-06af82471123" />
+<img width="662" height="732" alt="image" src="https://github.com/user-attachments/assets/33dcbfa1-66c2-4b1c-9a6e-f89ffe2d50f1" />
+<img width="641" height="841" alt="image" src="https://github.com/user-attachments/assets/f953f053-8675-4ed9-b541-a7e50b57a98f" />
 
 ## Features
 
