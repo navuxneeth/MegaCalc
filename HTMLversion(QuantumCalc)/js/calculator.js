@@ -1,233 +1,287 @@
-// Core calculator functionality
 class Calculator {
     constructor() {
-        this.currentInput = '0';
-        this.previousInput = '';
+        this.currentValue = new BigNumber(0);
+        this.previousValue = null;
         this.operation = null;
-        this.resetInput = false;
-        this.memory = new Decimal(0);
-        this.lastAnswer = new Decimal(0);
-        this.precision = 10; // Default decimal precision
-    }
-
-    updateDisplay(displayElement, historyElement) {
-        // Format the current input based on precision
-        let formattedValue = this.currentInput;
-        
-        // If it's a Decimal object, format it with the current precision
-        if (formattedValue instanceof Decimal) {
-            formattedValue = formattedValue.toFixed(this.precision);
-            // Remove trailing zeros and decimal point if needed
-            formattedValue = formattedValue.replace(/\.?0+$/, "");
-            if (formattedValue === "") formattedValue = "0";
-        }
-        
-        displayElement.textContent = formattedValue;
-        
-        // Update history display
-        if (this.previousInput && this.operation) {
-            historyElement.textContent = `${this.previousInput} ${this.operation}`;
-        } else {
-            historyElement.textContent = '';
-        }
-    }
-
-    appendNumber(number) {
-        // Handle decimal point
-        if (number === '.' && this.currentInput.includes('.')) return;
-        
-        // Replace the display if we're starting a new input
-        if (this.resetInput || this.currentInput === '0') {
-            // Keep the decimal point if that's what's being entered
-            this.currentInput = number === '.' ? '0.' : number;
-            this.resetInput = false;
-        } else {
-            this.currentInput += number;
-        }
-    }
-
-    chooseOperation(operation) {
-        if (this.currentInput === '') return;
-        
-        if (this.previousInput !== '') {
-            this.calculate();
-        }
-        
-        this.operation = operation;
-        this.previousInput = this.currentInput;
-        this.resetInput = true;
-    }
-
-    calculate() {
-        let computation;
-        const prev = new Decimal(this.previousInput);
-        const current = new Decimal(this.currentInput);
-        
-        switch (this.operation) {
-            case '+':
-                computation = prev.plus(current);
-                break;
-            case '−':
-                computation = prev.minus(current);
-                break;
-            case '×':
-                computation = prev.times(current);
-                break;
-            case '÷':
-                if (current.equals(0)) {
-                    this.currentInput = 'Error';
-                    return;
-                }
-                computation = prev.dividedBy(current);
-                break;
-            default:
-                return;
-        }
-        
-        this.currentInput = computation;
-        this.lastAnswer = computation;
-        this.operation = null;
-        this.previousInput = '';
-    }
-
-    clear() {
-        this.currentInput = '0';
-        this.previousInput = '';
-        this.operation = null;
-    }
-
-    toggleSign() {
-        this.currentInput = new Decimal(this.currentInput).negated().toString();
-    }
-
-    percentage() {
-        this.currentInput = new Decimal(this.currentInput).dividedBy(100).toString();
-    }
-
-    // Advanced functions
-    square() {
-        const value = new Decimal(this.currentInput);
-        this.currentInput = value.times(value);
-    }
-
-    cube() {
-        const value = new Decimal(this.currentInput);
-        this.currentInput = value.times(value).times(value);
-    }
-
-    power(exponent) {
-        const value = new Decimal(this.currentInput);
-        this.currentInput = value.pow(exponent);
-    }
-
-    squareRoot() {
-        const value = new Decimal(this.currentInput);
-        if (value.isNegative()) {
-            this.currentInput = 'Error';
-            return;
-        }
-        this.currentInput = value.sqrt();
-    }
-
-    nthRoot(n) {
-        const value = new Decimal(this.currentInput);
-        if (value.isNegative() && n % 2 === 0) {
-            this.currentInput = 'Error';
-            return;
-        }
-        this.currentInput = value.pow(new Decimal(1).dividedBy(n));
-    }
-
-    log10() {
-        const value = new Decimal(this.currentInput);
-        if (value.lessThanOrEqualTo(0)) {
-            this.currentInput = 'Error';
-            return;
-        }
-        this.currentInput = value.log();
-    }
-
-    ln() {
-        const value = new Decimal(this.currentInput);
-        if (value.lessThanOrEqualTo(0)) {
-            this.currentInput = 'Error';
-            return;
-        }
-        this.currentInput = value.ln();
-    }
-
-    factorial() {
-        const num = parseInt(this.currentInput);
-        if (num < 0) {
-            this.currentInput = 'Error';
-            return;
-        }
-        if (num > 170) { // Decimal.js has limitations
-            this.currentInput = 'Overflow';
-            return;
-        }
-
-        let result = new Decimal(1);
-        for (let i = 2; i <= num; i++) {
-            result = result.times(i);
-        }
-        this.currentInput = result;
-    }
-
-    sin() {
-        const value = new Decimal(this.currentInput);
-        this.currentInput = Decimal.sin(value);
-    }
-
-    cos() {
-        const value = new Decimal(this.currentInput);
-        this.currentInput = Decimal.cos(value);
-    }
-
-    tan() {
-        const value = new Decimal(this.currentInput);
-        const cosValue = Decimal.cos(value);
-        if (cosValue.equals(0)) {
-            this.currentInput = 'Error';
-            return;
-        }
-        this.currentInput = Decimal.sin(value).dividedBy(cosValue);
+        this.lastResult = null;
+        this.memory = new BigNumber(0);
+        this.history = [];
+        this.precision = 10;
+        this.isNewCalculation = true;
     }
 
     setPrecision(precision) {
         this.precision = parseInt(precision);
+        BigNumber.config({ DECIMAL_PLACES: this.precision });
+        return this;
     }
 
-    memoryStore() {
-        this.memory = new Decimal(this.currentInput);
+    appendNumber(number) {
+        const currentStr = this.currentValue.toString();
+        
+        // Check if number is '.' and string already contains a decimal point
+        if (number === '.' && currentStr.includes('.')) {
+            return this;
+        }
+        
+        // If starting a new calculation, replace the current value
+        if (this.isNewCalculation) {
+            this.currentValue = new BigNumber(number === '.' ? '0.' : number);
+            this.isNewCalculation = false;
+        } else {
+            // Otherwise append the number
+            this.currentValue = new BigNumber(currentStr + number);
+        }
+        
+        return this;
     }
 
-    memoryRecall() {
-        this.currentInput = this.memory;
-        this.resetInput = true;
+    setOperation(operation) {
+        // Complete any pending operation
+        if (this.operation !== null) {
+            this.calculate();
+        }
+        
+        this.operation = operation;
+        this.previousValue = this.currentValue;
+        this.currentValue = new BigNumber(0);
+        this.isNewCalculation = true;
+        
+        return this;
     }
 
-    memoryAdd() {
-        this.memory = this.memory.plus(new Decimal(this.currentInput));
+    calculate() {
+        if (this.previousValue === null || this.operation === null) {
+            return this;
+        }
+        
+        let result;
+        
+        try {
+            switch (this.operation) {
+                case '+':
+                    result = this.previousValue.plus(this.currentValue);
+                    break;
+                case '-':
+                    result = this.previousValue.minus(this.currentValue);
+                    break;
+                case '×':
+                case '*':
+                    result = this.previousValue.times(this.currentValue);
+                    break;
+                case '÷':
+                case '/':
+                    if (this.currentValue.isZero()) {
+                        throw new Error('Division by zero');
+                    }
+                    result = this.previousValue.dividedBy(this.currentValue);
+                    break;
+                case '%':
+                    result = this.previousValue.modulo(this.currentValue);
+                    break;
+                case 'xʸ':
+                case '^':
+                    result = this.previousValue.pow(this.currentValue);
+                    break;
+                default:
+                    return this;
+            }
+            
+            // Add to history
+            const historyItem = `${this.previousValue.toString()} ${this.operation} ${this.currentValue.toString()} = ${result.toString()}`;
+            this.history.push(historyItem);
+            
+            // Update current state
+            this.currentValue = result;
+            this.lastResult = result;
+            this.previousValue = null;
+            this.operation = null;
+            this.isNewCalculation = true;
+            
+        } catch (error) {
+            this.currentValue = new BigNumber(0);
+            this.previousValue = null;
+            this.operation = null;
+            this.isNewCalculation = true;
+            console.error(error);
+        }
+        
+        return this;
     }
 
-    memorySubtract() {
-        this.memory = this.memory.minus(new Decimal(this.currentInput));
+    clear() {
+        this.currentValue = new BigNumber(0);
+        this.previousValue = null;
+        this.operation = null;
+        this.isNewCalculation = true;
+        return this;
     }
 
-    memoryClear() {
-        this.memory = new Decimal(0);
+    negate() {
+        this.currentValue = this.currentValue.negated();
+        return this;
     }
 
-    useAnswer() {
-        this.currentInput = this.lastAnswer;
+    percent() {
+        this.currentValue = this.currentValue.dividedBy(100);
+        return this;
+    }
+
+    // Advanced functions
+    square() {
+        this.currentValue = this.currentValue.pow(2);
+        return this;
+    }
+
+    cube() {
+        this.currentValue = this.currentValue.pow(3);
+        return this;
+    }
+
+    squareRoot() {
+        if (this.currentValue.isNegative()) {
+            this.currentValue = new BigNumber(0);
+            return this;
+        }
+        this.currentValue = this.currentValue.sqrt();
+        return this;
+    }
+
+    cubeRoot() {
+        this.currentValue = this.currentValue.isNegative() 
+            ? new BigNumber(-1).times(new BigNumber(-1).times(this.currentValue).pow(1/3))
+            : this.currentValue.pow(1/3);
+        return this;
+    }
+
+    reciprocal() {
+        if (this.currentValue.isZero()) {
+            return this;
+        }
+        this.currentValue = new BigNumber(1).dividedBy(this.currentValue);
+        return this;
+    }
+
+    factorial() {
+        // Only calculate factorial for non-negative integers up to a reasonable limit
+        if (this.currentValue.isNegative() || !this.currentValue.isInteger() || this.currentValue.gt(170)) {
+            this.currentValue = new BigNumber(0);
+            return this;
+        }
+        
+        let result = new BigNumber(1);
+        const n = this.currentValue.toNumber();
+        
+        for (let i = 2; i <= n; i++) {
+            result = result.times(i);
+        }
+        
+        this.currentValue = result;
+        return this;
+    }
+
+    sin() {
+        this.currentValue = new BigNumber(Math.sin(this.currentValue.toNumber()));
+        return this;
+    }
+
+    cos() {
+        this.currentValue = new BigNumber(Math.cos(this.currentValue.toNumber()));
+        return this;
+    }
+
+    tan() {
+        this.currentValue = new BigNumber(Math.tan(this.currentValue.toNumber()));
+        return this;
+    }
+
+    log() {
+        if (this.currentValue.isNegative() || this.currentValue.isZero()) {
+            this.currentValue = new BigNumber(0);
+            return this;
+        }
+        this.currentValue = new BigNumber(Math.log10(this.currentValue.toNumber()));
+        return this;
+    }
+
+    ln() {
+        if (this.currentValue.isNegative() || this.currentValue.isZero()) {
+            this.currentValue = new BigNumber(0);
+            return this;
+        }
+        this.currentValue = new BigNumber(Math.log(this.currentValue.toNumber()));
+        return this;
+    }
+
+    abs() {
+        this.currentValue = this.currentValue.abs();
+        return this;
+    }
+
+    pi() {
+        this.currentValue = new BigNumber(Math.PI);
+        return this;
+    }
+
+    e() {
+        this.currentValue = new BigNumber(Math.E);
+        return this;
     }
 
     random() {
-        this.currentInput = new Decimal(Math.random());
+        this.currentValue = new BigNumber(Math.random());
+        return this;
     }
 
-    absolute() {
-        this.currentInput = new Decimal(this.currentInput).abs();
+    // Memory functions
+    memoryClear() {
+        this.memory = new BigNumber(0);
+        return this;
+    }
+
+    memoryRecall() {
+        this.currentValue = this.memory;
+        this.isNewCalculation = true;
+        return this;
+    }
+
+    memoryAdd() {
+        this.memory = this.memory.plus(this.currentValue);
+        return this;
+    }
+
+    memorySubtract() {
+        this.memory = this.memory.minus(this.currentValue);
+        return this;
+    }
+
+    // Get formatted current value
+    getDisplayValue() {
+        // Format the number based on precision
+        if (this.currentValue.toString() === "0") {
+            return "0";
+        }
+        
+        // Check if number is too large for normal display
+        if (this.currentValue.abs().gt(1e21) || this.currentValue.abs().lt(1e-7) && !this.currentValue.isZero()) {
+            return this.currentValue.toExponential(this.precision);
+        }
+        
+        return this.currentValue.toFixed(this.precision).replace(/\.?0+$/, "");
+    }
+
+    getHistoryValue() {
+        if (this.history.length > 0) {
+            return this.history[this.history.length - 1];
+        }
+        return '';
+    }
+
+    useLastResult() {
+        if (this.lastResult !== null) {
+            this.currentValue = this.lastResult;
+            this.isNewCalculation = true;
+        }
+        return this;
     }
 }
