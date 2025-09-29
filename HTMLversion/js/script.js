@@ -34,9 +34,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // If switching to graph mode, redraw the graph
+            // If switching to graph mode, resize canvas and redraw the graph
             if (mode === 'graph') {
-                grapher.draw();
+                setTimeout(() => {
+                    grapher.resizeCanvas();
+                }, 100);
             }
         });
     });
