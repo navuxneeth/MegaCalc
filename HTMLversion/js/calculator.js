@@ -117,6 +117,15 @@ class Calculator {
         return this;
     }
 
+    clearHistory() {
+        this.history = [];
+        return this;
+    }
+
+    getHistory() {
+        return this.history.slice(); // Return a copy
+    }
+
     negate() {
         this.currentValue = this.currentValue.negated();
         return this;
