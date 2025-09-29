@@ -34,9 +34,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // If switching to graph mode, redraw the graph
+            // If switching to graph mode, resize canvas and redraw the graph
             if (mode === 'graph') {
-                grapher.draw();
+                setTimeout(() => {
+                    grapher.resizeCanvas();
+                }, 100);
             }
         });
     });
@@ -52,6 +54,19 @@ document.addEventListener('DOMContentLoaded', function() {
         precisionValue.textContent = precision;
         calculator.setPrecision(precision);
         updateDisplay();
+    });
+    
+    // History controls
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const showHistoryBtn = document.getElementById('show-history-btn');
+    
+    clearHistoryBtn.addEventListener('click', function() {
+        calculator.clearHistory();
+        updateDisplay();
+    });
+    
+    showHistoryBtn.addEventListener('click', function() {
+        showHistoryModal();
     });
     
     // Simple calculator buttons
@@ -405,5 +420,34 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    
+    // Show history modal
+    function showHistoryModal() {
+        const history = calculator.getHistory();
+        let historyText = 'Calculator History:\n\n';
+        
+        if (history.length === 0) {
+            historyText += 'No calculations performed yet.';
+        } else {
+            history.forEach((item, index) => {
+                historyText += `${index + 1}. ${item}\n`;
+            });
+        }
+        
+        alert(historyText);
+    }
+    
+    // Update display to show latest history item
+    function updateDisplay() {
+        mainDisplay.textContent = calculator.getDisplayValue();
+        
+        // Show the latest history item in the history display
+        const history = calculator.getHistory();
+        if (history.length > 0) {
+            historyDisplay.textContent = history[history.length - 1];
+        } else {
+            historyDisplay.textContent = '';
+        }
     }
 });

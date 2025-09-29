@@ -41,6 +41,11 @@
                 <span class="precision-text">decimal places</span>
             </div>
 
+            <div class="history-controls">
+                <button class="history-btn" id="clear-history-btn">Clear History</button>
+                <button class="history-btn" id="show-history-btn">Show History</button>
+            </div>
+
             <!-- Simple Calculator Interface -->
             <div id="simple-interface" class="calculator-interface active">
                 <div class="keypad">
@@ -181,8 +186,8 @@
         </div>
     </div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.1.1/bignumber.min.js"></script>
+    <script src="lib/bignumber-simple.js"></script>
+    <script src="lib/math-simple.js"></script>
     <script src="js/calculator.js"></script>
     <script src="js/grapher.js"></script>
     <script src="js/script.js"></script>

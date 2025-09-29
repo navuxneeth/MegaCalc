@@ -282,6 +282,36 @@ input:checked + .slider:before {
     font-size: 0.7rem;
 }
 
+.history-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.history-btn {
+    padding: 8px 12px;
+    border: 2px solid #000;
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    font-size: 0.7rem;
+    cursor: pointer;
+    background-color: var(--function-btn-bg);
+    color: var(--btn-text);
+    box-shadow: var(--retro-shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.history-btn:hover {
+    background-color: var(--function-btn-hover);
+}
+
+.history-btn:active {
+    background-color: var(--function-btn-active);
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
 .calculator-interface {
     display: none;
 }

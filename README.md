@@ -14,8 +14,9 @@ A retro-styled, advanced calculator web application with graphing capabilities.
   - **Advanced Mode**: Scientific calculator functions
   - **Graph Mode**: Plot multiple functions with customizable colors
 - High precision calculations (up to 50 decimal places)
-- Support for very large numbers using BigNumber.js
+- Self-contained with no external dependencies
 - Customizable decimal precision with slider
+- Calculation history with clear history option
 - Dark/light theme toggle
 - Responsive design for all screen sizes
 
@@ -40,10 +41,12 @@ A retro-styled, advanced calculator web application with graphing capabilities.
 
 ### Graph Mode
 - Plot multiple equations simultaneously
+- Supports complex mathematical functions (sin, cos, tan, log, exp, etc.)
 - Customizable line colors for each equation
 - Adjustable x and y ranges
 - Zoom in/out functionality
 - Grid with labeled axes
+- Input validation and error handling
 
 ## How to Use
 
@@ -51,6 +54,8 @@ A retro-styled, advanced calculator web application with graphing capabilities.
 2. Switch between modes using the buttons at the top
 3. Adjust decimal precision using the slider
 4. Toggle between light and dark themes using the switch in the upper right
+5. View calculation history using "Show History" button
+6. Clear calculation history using "Clear History" button
 
 ### Keyboard Support
 
@@ -65,9 +70,11 @@ When in Simple or Advanced mode:
 ## Technical Details
 
 - Built with vanilla JavaScript, HTML, and CSS
-- Uses BigNumber.js for high-precision arithmetic
-- Uses Math.js for parsing and evaluating mathematical expressions in graphing mode
+- Self-contained with simplified BigNumber implementation for high-precision arithmetic
+- Custom Math expression parser for graphing functionality
+- No external dependencies or CDN requirements
 - No build process required - just open in a browser
+- Works offline once loaded
 
 ## Browser Compatibility
 
